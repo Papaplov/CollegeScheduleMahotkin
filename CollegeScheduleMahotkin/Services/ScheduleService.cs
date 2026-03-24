@@ -124,5 +124,21 @@ namespace CollegeScheduleMahotkin.Services
                 Lessons = new List<LessonDto>()
             };
         }
+        public async Task<List<GroupDto>> GetAllGroups()
+        {
+            var groups = await _db.StudentGroups
+                .Include(g => g.Specialty)
+                .OrderBy(g => g.GroupName)
+                .Select(g => new GroupDto
+                {
+                    GroupId = g.GroupId,
+                    GroupName = g.GroupName,
+                    SpecialtyName = g.Specialty != null ? g.Specialty.Name : null,
+                    Course = g.Course
+                })
+                .ToListAsync();
+
+            return groups;
+        }
     }
 }
